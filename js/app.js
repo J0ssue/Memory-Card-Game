@@ -41,6 +41,12 @@ let movesNum = 0;
 //var used for star rating function.
 const stars = document.querySelectorAll(".fa.fa-star");
 
+//var used for restart function 
+const restart = document.querySelector(".restart");
+
+restart.addEventListener("click", function() {
+	restartGame();
+});
 
 //Game Logic
 //Listens for clicks on cards
@@ -96,6 +102,14 @@ function starRating() {
 	}
 }
 
+//Restart button functionality
+function restartGame() {
+		let cards = document.querySelectorAll(".card");
+		for (let i = 0; i < cards.length; i++) {
+			cards[i].classList.remove("open");
+			cards[i].classList.remove("show");
+		}
+}
  /*
  *  - display the card's symbol (put this functionality in another function that you call from this one)
 
