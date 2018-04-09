@@ -29,13 +29,16 @@ function shuffle(array) {
 
 /*
  * set up the event listener for a card. If a card is clicked:
-
  */
- //elements clicked get stored into cardList
-let cardList = [];
 
-let matchedCardsCounter = 0;
+let cardList = [];//added elements clicked
 
+let matchedCardsCounter = 0;//counts pairs
+
+let moves = document.querySelector(".moves");
+let movesNum = 0;
+
+//Game Logic
 //Listens for clicks on cards
 function clickedCard() {
 	let cards = document.querySelectorAll(".card");
@@ -59,14 +62,24 @@ function matchCards() {
 			cardList[1].classList.remove("show");
 			cardList = [];
 		}, 350);
-		
+
+		movesCounter();
+
 	} else if (cardList.length === 2 && cardList[0].childNodes[1].className === cardList[1].childNodes[1].className) {
 		matchedCardsCounter += 1;
 		cardList = [];
+
+		movesCounter();
 	}
 }
 clickedCard();
 
+
+//Counts number of moves
+function movesCounter() {
+		movesNum += 1;
+		moves.innerHTML = movesNum;
+}
 
 
 
