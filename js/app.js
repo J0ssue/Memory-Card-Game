@@ -31,12 +31,16 @@ function shuffle(array) {
  * set up the event listener for a card. If a card is clicked:
  */
 
-let cardList = [];//added elements clicked
+let cardList = [];//added elements clicked.
+let matchedCardsCounter = 0;//counts pairs.
 
-let matchedCardsCounter = 0;//counts pairs
-
-let moves = document.querySelector(".moves");
+//Variables used for moves counter functionality.
+const moves = document.querySelector(".moves");
 let movesNum = 0;
+
+//var used for star rating function.
+const stars = document.querySelectorAll(".fa.fa-star");
+
 
 //Game Logic
 //Listens for clicks on cards
@@ -52,7 +56,7 @@ function clickedCard() {
 	}
 }
 
-//removes elements from cardList if className doesn't match
+//flips cards back if no-match found
 function matchCards() {
 	if (cardList.length === 2 && cardList[0].childNodes[1].className !== cardList[1].childNodes[1].className) {
 		setTimeout(function() {
@@ -62,26 +66,35 @@ function matchCards() {
 			cardList[1].classList.remove("show");
 			cardList = [];
 		}, 350);
-
-		movesCounter();
+		movesCounter();//counts moves when no-match
 
 	} else if (cardList.length === 2 && cardList[0].childNodes[1].className === cardList[1].childNodes[1].className) {
 		matchedCardsCounter += 1;
 		cardList = [];
-
-		movesCounter();
+		movesCounter();//counts moves when match
 	}
 }
 clickedCard();
 
-
-//Counts number of moves
+//Counts number of moves function.
 function movesCounter() {
 		movesNum += 1;
 		moves.innerHTML = movesNum;
+		starRating();
 }
 
-
+//Star Rating function.
+function starRating() {
+	if (movesNum > 8) {
+		stars[0].classList.remove("fa-star");
+	}
+	if (movesNum > 16) {
+		stars[1].classList.remove("fa-star");
+	}
+	if (movesNum > 20) {
+		stars[2].classList.remove("fa-star");
+	}
+}
 
  /*
  *  - display the card's symbol (put this functionality in another function that you call from this one)
