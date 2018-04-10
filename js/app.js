@@ -35,11 +35,13 @@ let cardList = [];//added elements clicked.
 let matchedCardsCounter = 0;//counts pairs.
 
 //Variables used for moves counter functionality.
-const moves = document.querySelector(".moves");
 let movesNum = 0;
+const moves = document.querySelector(".moves");
 
 //var used for star rating function.
 const stars = document.querySelectorAll(".fa.fa-star");
+//Cards reference
+let cards = document.querySelectorAll(".card");
 
 //var used for restart function 
 const restart = document.querySelector(".restart");
@@ -48,11 +50,10 @@ restart.addEventListener("click", function() {
 	restartGame();
 });
 
+
 //Game Logic
 //Listens for clicks on cards
 function clickedCard() {
-	let cards = document.querySelectorAll(".card");
-
 	for (let i = 0; i < cards.length; i++) {
 		cards[i].addEventListener("click", function(e){
 			cards[i].className = "card open show";
@@ -61,6 +62,7 @@ function clickedCard() {
 		});
 	}
 }
+clickedCard();
 
 //flips cards back if no-match found
 function matchCards() {
@@ -73,14 +75,13 @@ function matchCards() {
 			cardList = [];
 		}, 350);
 		movesCounter();//counts moves when no-match
-
 	} else if (cardList.length === 2 && cardList[0].childNodes[1].className === cardList[1].childNodes[1].className) {
 		matchedCardsCounter += 1;
+		allCardsMatch();
 		cardList = [];
 		movesCounter();//counts moves when match
 	}
 }
-clickedCard();
 
 //Counts number of moves function.
 function movesCounter() {
@@ -102,13 +103,45 @@ function starRating() {
 	}
 }
 
+//finish game 
+function allCardsMatch() {
+	if (matchedCardsCounter === 8) {
+		//div container reference
+		const container = document.querySelector(".gameEnd");
+
+		//create game end elements
+		let gameEnd = document.createElement("div");
+		let gameEndAnouncement = document.createElement("h5");
+		let button = document.createElement("button");
+		let numberOfMoves = document.createElement("p");
+
+		//style
+		gameEnd.id = "game-end";
+		gameEndAnouncement.textContent = "You Won!";
+		gameEndAnouncement.style.fontSize = "30px";
+		numberOfMoves.textContent = `You made ${movesNum} moves`;
+		button.style.padding = "10px";
+		button.style.borderRadius = "5px";
+		button.style.border = "none";
+		button.style.color = "#333";
+		button.style.backgroundColor = "aqua";
+		button.textContent = "Play Again";
+
+		//append elements to div
+		gameEnd.appendChild(gameEndAnouncement);
+		gameEnd.appendChild(numberOfMoves);
+		gameEnd.appendChild(button);
+		container.appendChild(gameEnd);
+
+		button.addEventListener("click", function() {
+			restartGame();
+		})
+	}	
+}
+
 //Restart button functionality
 function restartGame() {
-		let cards = document.querySelectorAll(".card");
-		for (let i = 0; i < cards.length; i++) {
-			cards[i].classList.remove("open");
-			cards[i].classList.remove("show");
-		}
+	location.reload();
 }
  /*
  *  - display the card's symbol (put this functionality in another function that you call from this one)

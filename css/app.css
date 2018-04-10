@@ -112,3 +112,19 @@ h1 {
     cursor: pointer;
 }
 
+/*Game end div*/
+#game-end {
+    width: 100%;
+    height: 200px;
+    padding: 30px;
+    color: #000;
+    background-color: #eee;
+    box-sizing: border-box;
+}
+
+#game-end h5,
+#game-end p,
+#game-end button {
+    margin-left: auto;
+    margin-right: auto;
+}
