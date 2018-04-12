@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <title>Matching Game</title>
     <meta name="description" content="">
-    <!-- Bootstrap -->
+    <!-- Font Awesome -->
     <link rel="stylesheet prefetch" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
 
     <!-- Font Awesome -->
     <link href="https://fonts.googleapis.com/css?family=Coda" rel="stylesheet">
@@ -15,11 +15,18 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <!-- Game End Modal -->
+    
+    <div id="simpleModal" class="modal">
+       <div class="modal-content">
+          <span id="closeBtn">&times;</span> 
+          <p id="endMessageP">Congratulations! You won!</p>
+          <button id="modalBtn" class="button">Play Again?</button>
+      </div> 
+    </div>
 
     <div class="container">
-        <div class="gameEnd">
-            
-        </div>
+
         <header>
             <h1>Matching Game</h1>
         </header>

@@ -104,40 +104,31 @@ function starRating() {
 }
 
 //finish game 
+const modal = document.getElementById("simpleModal");
+const modalBtn = document.getElementById("modalBtn");
+const closeBtn = document.getElementById("closeBtn");
+const modalContent = document.querySelector(".modal-content");
+
 function allCardsMatch() {
 	if (matchedCardsCounter === 8) {
-		//div container reference
-		const container = document.querySelector(".gameEnd");
+		modal.addEventListener("click", openModal());
+		if (modal.style.display === "block") {
+			closeBtn.addEventListener("click", function() {
+				modal.style.display = "none";
+			});
+			modalBtn.addEventListener("click", function() {
+				restartGame();
+			});
+		}
+	}
 
-		//create game end elements
-		let gameEnd = document.createElement("div");
-		let gameEndAnouncement = document.createElement("h5");
-		let button = document.createElement("button");
-		let numberOfMoves = document.createElement("p");
-
-		//style
-		gameEnd.id = "game-end";
-		gameEndAnouncement.textContent = "You Won!";
-		gameEndAnouncement.style.fontSize = "30px";
-		numberOfMoves.textContent = `You made ${movesNum} moves`;
-		button.style.padding = "10px";
-		button.style.borderRadius = "5px";
-		button.style.border = "none";
-		button.style.color = "#333";
-		button.style.backgroundColor = "aqua";
-		button.textContent = "Play Again";
-
-		//append elements to div
-		gameEnd.appendChild(gameEndAnouncement);
-		gameEnd.appendChild(numberOfMoves);
-		gameEnd.appendChild(button);
-		container.appendChild(gameEnd);
-
-		button.addEventListener("click", function() {
-			restartGame();
-		})
-	}	
 }
+
+function openModal() {
+	modal.style.display = "block";
+}
+
+
 
 //Restart button functionality
 function restartGame() {
