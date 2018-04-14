@@ -40,6 +40,8 @@ const moves = document.querySelector(".moves");
 
 //var used for star rating function.
 const stars = document.querySelectorAll(".fa.fa-star");
+let starsNum = 0;
+
 //Cards reference
 let cards = document.querySelectorAll(".card");
 
@@ -85,8 +87,8 @@ function matchCards() {
 
 //Counts number of moves function.
 function movesCounter() {
-		movesNum += 1;
-		moves.innerHTML = movesNum;
+		movesNum++;
+		moves.innerHTML = movesNum - 1;
 		starRating();
 }
 
@@ -108,9 +110,16 @@ const modal = document.getElementById("simpleModal");
 const modalBtn = document.getElementById("modalBtn");
 const closeBtn = document.getElementById("closeBtn");
 const modalContent = document.querySelector(".modal-content");
+const rating = document.getElementById("rating");
+const numberOfMoves = document.getElementById("numberOfMoves");
 
 function allCardsMatch() {
 	if (matchedCardsCounter === 8) {
+		for (let i = 0; i < stars.length; i++){
+			if (stars[i].className === "fa fa-star") {
+				starsNum++;
+			}
+		}
 		modal.addEventListener("click", openModal());
 		if (modal.style.display === "block") {
 			closeBtn.addEventListener("click", function() {
@@ -126,9 +135,9 @@ function allCardsMatch() {
 
 function openModal() {
 	modal.style.display = "block";
+	numberOfMoves.innerHTML = `You made ${movesNum} moves to complete the game.`;
+	rating.innerHTML = `Your stars rating is ${starsNum} stars!`;
 }
-
-
 
 //Restart button functionality
 function restartGame() {
