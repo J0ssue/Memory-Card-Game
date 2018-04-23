@@ -32,9 +32,6 @@ let modalContent = document.querySelector(".modal-content");
 let stars = document.querySelectorAll(".fa-star");
 let starCounter;
 
-// Timer references
-let timer = document.querySelector(".timer");
-
 // Restart button functionality
 function restartGameButton() {
 	restart = document.querySelector(".restart");
@@ -72,6 +69,20 @@ function newGame() {
 }
 
 window.onload = newGame();
+
+// Timer
+var sec = 0;
+function pad ( val ) { return val > 9 ? val : "0" + val; }
+var myTime =	setInterval( function(){
+		document.getElementById("seconds").innerHTML=pad(++sec%60);
+		document.getElementById("minutes").innerHTML=pad(parseInt(sec/60,10));
+}, 1000);
+
+function stopTime() {
+	if (matchedPairs === 8) {
+		clearInterval(myTime);
+	}
+}
 
 // set up the event listener for a card. If a card is clicked:
 function displayCardSymbol() {
@@ -123,6 +134,7 @@ function checkForMatchingCards() {
 		openCardList = [];
 		starRating();
 		incrementMovesCounter();
+		stopTime();
 		endOfGame();
 	}
 }
@@ -168,6 +180,7 @@ function openModal() {
   message.innerHTML = `
  		<p>Congratulations! YOU WON!</p>
  		<p>!!Moves made ${movesCounter}!! !!Your star rating is ${starCounter}!!</p>
+ 		<p>Your time is ${sec} seconds</p>
     <button id="modalBtn" class="button">Play Again?</button>
  	`;
  	modalContent.appendChild(message);
@@ -191,3 +204,6 @@ function playAgain(button) {
 		location.reload();
 	});
 }
+
+
+

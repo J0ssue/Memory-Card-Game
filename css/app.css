@@ -162,3 +162,13 @@ h1 {
     float: right;
     cursor: pointer;
 }
+
+/*Timer*/
+.time-text {
+    padding-left: 10px;
+}
+
+.timer {
+    font-size: 20px;
+    padding-left: 5px;
+}
