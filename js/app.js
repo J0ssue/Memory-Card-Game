@@ -1,4 +1,4 @@
- // * Create a list that holds all of your cards
+// * Create a list that holds all of your cards
 var icons = [
 "fa-diamond",
 "fa-paper-plane-o",
@@ -27,9 +27,13 @@ let moves;// moves DOM reference
 let restart;// restart button reference
 let matchedPairs = 0;//
 
+// Modal references
 let modalContent = document.querySelector(".modal-content");
 let stars = document.querySelectorAll(".fa-star");
 let starCounter;
+
+// Timer references
+let timer = document.querySelector(".timer");
 
 // Restart button functionality
 function restartGameButton() {
