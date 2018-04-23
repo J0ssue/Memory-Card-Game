@@ -1,155 +1,189 @@
-/*
- * Create a list that holds all of your cards
- */
+ // * Create a list that holds all of your cards
+var icons = [
+"fa-diamond",
+"fa-paper-plane-o",
+"fa-anchor",
+"fa-bolt",
+"fa-cube",
+"fa-leaf",
+"fa-bicycle",
+"fa-bomb",
+"fa-diamond",
+"fa-paper-plane-o",
+"fa-anchor",
+"fa-bolt",
+"fa-cube",
+"fa-leaf",
+"fa-bicycle",
+"fa-bomb"
+];
 
-
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
-
-
-// Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-}
-
-/*
- * set up the event listener for a card. If a card is clicked:
- */
-
-let cardList = [];//added elements clicked.
-let matchedCardsCounter = 0;//counts pairs.
-
-//Variables used for moves counter functionality.
-let movesNum = 0;
-const moves = document.querySelector(".moves");
-
-//var used for star rating function.
-const stars = document.querySelectorAll(".fa.fa-star");
-let starsNum = 0;
-
-//Cards reference
+// REFERENCES 
+// Cards Reference
 let cards = document.querySelectorAll(".card");
+let openCardList = [];// Open cards holder
+let movesCounter = 0;// counts moves
+let moves;// moves DOM reference
+let restart;// restart button reference
+let matchedPairs = 0;//
 
-//var used for restart function 
-const restart = document.querySelector(".restart");
+let modalContent = document.querySelector(".modal-content");
+let stars = document.querySelectorAll(".fa-star");
+let starCounter;
 
-restart.addEventListener("click", function() {
-	restartGame();
-});
+// Restart button functionality
+function restartGameButton() {
+	restart = document.querySelector(".restart");
+	restart.addEventListener("click", function() {
+		location.reload();
+	});
+}
+restartGameButton();
 
+// * Display the cards on the page
+// -shuffle the list of cards using the provided "shuffle" method below
+ function shuffle(array) {
+ 	var currentIndex = array.length, temporaryValue, randomIndex;
 
-//Game Logic
-//Listens for clicks on cards
-function clickedCard() {
+ 	while (currentIndex !== 0) {
+ 		randomIndex = Math.floor(Math.random() * currentIndex);
+ 		currentIndex -= 1;
+ 		temporaryValue = array[currentIndex];
+ 		array[currentIndex] = array[randomIndex];
+ 		array[randomIndex] = temporaryValue;
+ 	}
+
+ 	return array;
+ }
+
+// - loop through each card and create its HTML
+function newGame() {
+	let iconShuffle = shuffle(icons);	
+	for (let i = 0; i < iconShuffle.length; i++) {
+// - add each card's HTML to the page
+		cards[i].innerHTML = `<i class="fa ${icons[i]}"></i>`;
+	}
+	displayCardSymbol();
+	console.log(iconShuffle);
+}
+
+window.onload = newGame();
+
+// set up the event listener for a card. If a card is clicked:
+function displayCardSymbol() {
 	for (let i = 0; i < cards.length; i++) {
-		cards[i].addEventListener("click", function(e){
-			cards[i].className = "card open show";
-			cardList.push(e.target);
-			matchCards();
+		// onetime(cards[i], "click");
+		clickListener(cards[i]);
+	}
+}
+
+ // * display the card's symbol (put this functionality in another function that you call from this one)
+
+function clickListener(element) {
+	if (element.className === "card") {
+		element.addEventListener("click", function(e) {
+			element.classList.add("open");
+			if (element.className === "card open") {
+				openCardAddToList(element);
+			} 
 		});
-	}
+	}  
 }
-clickedCard();
+// function below removes event listener
+// element.removeEventListener("click", arguments.callee);
 
-//flips cards back if no-match found
-function matchCards() {
-	if (cardList.length === 2 && cardList[0].childNodes[1].className !== cardList[1].childNodes[1].className) {
+ // * - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
+function openCardAddToList(element) {
+	openCardList.push(element);
+	checkForMatchingCards();
+}
+
+// * - if the list already has another card, check to see if the two cards match
+function checkForMatchingCards() {
+ 	// * + if the cards do not "match", remove the cards from the list and hide the card's symbol 
+	if (openCardList.length === 2 && openCardList[0].innerHTML !== openCardList[1].innerHTML) {
 		setTimeout(function() {
-			cardList[0].classList.remove("open");
-			cardList[0].classList.remove("show");
-			cardList[1].classList.remove("open");
-			cardList[1].classList.remove("show");
-			cardList = [];
+			openCardList[0].classList.remove("open");
+			openCardList[1].classList.remove("open");
+			openCardList = [];
 		}, 350);
-		movesCounter();//counts moves when no-match
-	} else if (cardList.length === 2 && cardList[0].childNodes[1].className === cardList[1].childNodes[1].className) {
-		matchedCardsCounter += 1;
-		allCardsMatch();
-		cardList = [];
-		movesCounter();//counts moves when match
-	}
-}
-
-//Counts number of moves function.
-function movesCounter() {
-		movesNum++;
-		moves.innerHTML = movesNum - 1;
+		movesCounter++;
 		starRating();
+		incrementMovesCounter();
+ 	// * + if the cards do "match", lock the cards in the open position 
+	} else if (openCardList.length === 2 && openCardList[0].innerHTML === openCardList[1].innerHTML) {
+		openCardList[0].className = "card match";	
+		openCardList[1].className = "card match";	
+		matchedPairs++;
+		movesCounter++;
+		openCardList = [];
+		starRating();
+		incrementMovesCounter();
+		endOfGame();
+	}
 }
 
-//Star Rating function.
+// * + increment the move counter and display it on the page
+function incrementMovesCounter() {
+	moves = document.querySelector(".moves");
+	moves.textContent = `${movesCounter}`;
+}
+
+// removes stars after certain amount of moves
 function starRating() {
-	if (movesNum > 8) {
+	if (movesCounter > 8) {
 		stars[0].classList.remove("fa-star");
+		stars[0].classList.add("fa-star-o");
+		starCounter = 2;
 	}
-	if (movesNum > 16) {
+	if (movesCounter > 15) {
 		stars[1].classList.remove("fa-star");
+		stars[1].classList.add("fa-star-o");
+		starCounter = 1;
 	}
-	if (movesNum > 20) {
+	if (movesCounter > 20) {
 		stars[2].classList.remove("fa-star");
+		stars[2].classList.add("fa-star-o");
+		starCounter = 0;
 	}
 }
 
-//finish game 
-const modal = document.getElementById("simpleModal");
-const modalBtn = document.getElementById("modalBtn");
-const closeBtn = document.getElementById("closeBtn");
-const modalContent = document.querySelector(".modal-content");
-const rating = document.getElementById("rating");
-const numberOfMoves = document.getElementById("numberOfMoves");
-
-function allCardsMatch() {
-	if (matchedCardsCounter === 8) {
-		for (let i = 0; i < stars.length; i++){
-			if (stars[i].className === "fa fa-star") {
-				starsNum++;
-			}
-		}
-		modal.addEventListener("click", openModal());
-		if (modal.style.display === "block") {
-			closeBtn.addEventListener("click", function() {
-				modal.style.display = "none";
-			});
-			modalBtn.addEventListener("click", function() {
-				restartGame();
-			});
-		}
+// end game functionality
+function endOfGame() {
+	if (matchedPairs === 8) {
+		openModal();
 	}
-
 }
 
+ // * + if all cards have matched, display a message with the final score 
 function openModal() {
-	modal.style.display = "block";
-	numberOfMoves.innerHTML = `You made ${movesNum} moves to complete the game.`;
-	rating.innerHTML = `Your stars rating is ${starsNum} stars!`;
+	let modal = document.querySelector(".modal");
+ 	let message = document.createElement("div");
+
+ 	modal.style.display = "block";
+  message.innerHTML = `
+ 		<p>Congratulations! YOU WON!</p>
+ 		<p>!!Moves made ${movesCounter}!! !!Your star rating is ${starCounter}!!</p>
+    <button id="modalBtn" class="button">Play Again?</button>
+ 	`;
+ 	modalContent.appendChild(message);
+
+	let playButton = document.getElementById("modalBtn");
+ 	closeModal(modal);
+ 	playAgain(playButton);
 }
 
-//Restart button functionality
-function restartGame() {
-	location.reload();
+// close modal functionality
+function closeModal(element) {
+	let closeButton = document.getElementById("closeBtn");
+	closeButton.addEventListener("click", function() {
+		element.style.display = "none";
+	});
 }
- /*
- *  - display the card's symbol (put this functionality in another function that you call from this one)
 
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
+// play again button functionality
+function playAgain(button) {
+	button.addEventListener("click", function() {
+		location.reload();
+	});
+}
