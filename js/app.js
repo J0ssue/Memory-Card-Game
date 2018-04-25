@@ -94,18 +94,42 @@ function displayCardSymbol() {
 
  // * display the card's symbol (put this functionality in another function that you call from this one)
 
+function handleCardClick(event) {
+//	console.log(event, element);
+	event.target.classList.add("open");
+	if (event.target.className === "card open") {
+		openCardAddToList(event.target);
+		// is it the first opened card? 
+		// yes > remove click event from this card only
+		if (openCardList.length === 1) {
+			console.log("xx", openCardList[0],);
+			openCardList[0].removeEventListener("click", handleCardClick);
+		}
+		// is it the second opened card?
+		// yes > remove click event from all cards
+		if (openCardList.length === 2) {
+			for (let i = 0; i < cards.length; i++) {
+				cards[i].removeEventListener("click", handleCardClick);
+			}
+		}
+	}
+}
+// () => handleCardClick(element)
 function clickListener(element) {
 	if (element.className === "card") {
-		element.addEventListener("click", function(e) {
-			element.classList.add("open");
-			if (element.className === "card open") {
-				openCardAddToList(element);
-			} 
-		});
+		element.addEventListener("click", handleCardClick//function(e) {
+		// 	element.classList.add("open");
+		// 	if (element.className === "card open") {
+		// 		openCardAddToList(element);
+		// 	} 
+		// }
+		);
 	}  
 }
 // function below removes event listener
-// element.removeEventListener("click", arguments.callee);
+// function clickRemover(type, element) {
+//  element.removeEventListener(type, arguments.callee);
+// }
 
  // * - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
 function openCardAddToList(element) {
@@ -121,7 +145,9 @@ function checkForMatchingCards() {
 			openCardList[0].classList.remove("open");
 			openCardList[1].classList.remove("open");
 			openCardList = [];
-		}, 350);
+			displayCardSymbol();
+			// bring back the click listener for all cards that don't have a match class
+		}, 2000);
 		movesCounter++;
 		starRating();
 		incrementMovesCounter();
@@ -134,6 +160,7 @@ function checkForMatchingCards() {
 		openCardList = [];
 		starRating();
 		incrementMovesCounter();
+		// bring back the click listener for all cards that don't have a match class
 		stopTime();
 		endOfGame();
 	}
