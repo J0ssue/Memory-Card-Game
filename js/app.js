@@ -73,7 +73,7 @@ function newGame() {
 
 window.onload = newGame();
 
-// Timer from stackoverflow
+// Timer 
 function timerStart() {
 	console.log(openCardList.length);
 	console.log(movesCounter);
