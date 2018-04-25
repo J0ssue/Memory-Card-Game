@@ -32,6 +32,9 @@ let modalContent = document.querySelector(".modal-content");
 let stars = document.querySelectorAll(".fa-star");
 let starCounter;
 
+// Timer variables
+var myTimeInterval;
+var sec;
 // Restart button functionality
 function restartGameButton() {
 	restart = document.querySelector(".restart");
@@ -64,74 +67,65 @@ function newGame() {
 // - add each card's HTML to the page
 		cards[i].innerHTML = `<i class="fa ${icons[i]}"></i>`;
 	}
-	displayCardSymbol();
+	makeUnmatchedCardsClickable();
 	console.log(iconShuffle);
 }
 
 window.onload = newGame();
 
-// Timer
-var sec = 0;
-function pad ( val ) { return val > 9 ? val : "0" + val; }
-var myTime =	setInterval( function(){
-		document.getElementById("seconds").innerHTML=pad(++sec%60);
-		document.getElementById("minutes").innerHTML=pad(parseInt(sec/60,10));
-}, 1000);
+// Timer from stackoverflow
+function timerStart() {
+	console.log(openCardList.length);
+	console.log(movesCounter);
+	if (openCardList.length === 1 && movesCounter === 0) {
+		 sec = 0;
+		function pad ( val ) { return val > 9 ? val : "0" + val; }
+		 myTimeInterval =	setInterval( function(){
+			document.getElementById("seconds").innerHTML=pad(++sec%60);
+			document.getElementById("minutes").innerHTML=pad(parseInt(sec/60,10));
+		}, 1000);
+	}
+}
 
+// Stop timer when all cards match
 function stopTime() {
 	if (matchedPairs === 8) {
-		clearInterval(myTime);
+		clearInterval(myTimeInterval);
 	}
 }
+		
 
 // set up the event listener for a card. If a card is clicked:
-function displayCardSymbol() {
+function makeUnmatchedCardsClickable() {
 	for (let i = 0; i < cards.length; i++) {
-		// onetime(cards[i], "click");
-		clickListener(cards[i]);
+		if (cards[i].className === "card") {
+			cards[i].addEventListener("click", handleCardClick);
+		}
 	}
 }
 
- // * display the card's symbol (put this functionality in another function that you call from this one)
-
+// * display the card's symbol
 function handleCardClick(event) {
-//	console.log(event, element);
 	event.target.classList.add("open");
 	if (event.target.className === "card open") {
-		openCardAddToList(event.target);
 		// is it the first opened card? 
 		// yes > remove click event from this card only
-		if (openCardList.length === 1) {
-			console.log("xx", openCardList[0],);
-			openCardList[0].removeEventListener("click", handleCardClick);
+		if (openCardList.length === 0) {
+			event.target.removeEventListener("click", handleCardClick);
 		}
 		// is it the second opened card?
 		// yes > remove click event from all cards
-		if (openCardList.length === 2) {
+		if (openCardList.length === 1) {
 			for (let i = 0; i < cards.length; i++) {
 				cards[i].removeEventListener("click", handleCardClick);
 			}
 		}
+		openCardAddToList(event.target);
+		timerStart();
 	}
 }
-// () => handleCardClick(element)
-function clickListener(element) {
-	if (element.className === "card") {
-		element.addEventListener("click", handleCardClick//function(e) {
-		// 	element.classList.add("open");
-		// 	if (element.className === "card open") {
-		// 		openCardAddToList(element);
-		// 	} 
-		// }
-		);
-	}  
-}
-// function below removes event listener
-// function clickRemover(type, element) {
-//  element.removeEventListener(type, arguments.callee);
-// }
 
- // * - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
+// * - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
 function openCardAddToList(element) {
 	openCardList.push(element);
 	checkForMatchingCards();
@@ -145,9 +139,9 @@ function checkForMatchingCards() {
 			openCardList[0].classList.remove("open");
 			openCardList[1].classList.remove("open");
 			openCardList = [];
-			displayCardSymbol();
+			makeUnmatchedCardsClickable();
 			// bring back the click listener for all cards that don't have a match class
-		}, 2000);
+		}, 350);
 		movesCounter++;
 		starRating();
 		incrementMovesCounter();
@@ -161,7 +155,8 @@ function checkForMatchingCards() {
 		starRating();
 		incrementMovesCounter();
 		// bring back the click listener for all cards that don't have a match class
-		stopTime();
+			makeUnmatchedCardsClickable();
+ 		stopTime();
 		endOfGame();
 	}
 }
@@ -213,12 +208,12 @@ function openModal() {
  	modalContent.appendChild(message);
 
 	let playButton = document.getElementById("modalBtn");
- 	closeModal(modal);
+ 	closeModalButton(modal);
  	playAgain(playButton);
 }
 
 // close modal functionality
-function closeModal(element) {
+function closeModalButton(element) {
 	let closeButton = document.getElementById("closeBtn");
 	closeButton.addEventListener("click", function() {
 		element.style.display = "none";
