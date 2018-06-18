@@ -12,3 +12,5 @@ When the game is over the player will be greeted with a message and the score an
 When the message appears the player can click on a button to play again or an x button to close message.
 
 Here is a link to a live version of the [Game](https://j0ssue.github.io/Memory-Card-Game/).
+
+* To open the game locally open the index.html file, right click on it, load it to your browser, and enjoy the game!
